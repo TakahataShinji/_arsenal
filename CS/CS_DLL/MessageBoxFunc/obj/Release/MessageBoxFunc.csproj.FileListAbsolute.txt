@@ -1,0 +1,6 @@
+D:\_Library\CSharp_DLL\MessageBoxFunc\obj\Release\MessageBoxFunc.csprojResolveAssemblyReference.cache
+D:\_Library\CSharp_DLL\MessageBoxFunc\obj\Release\MessageBoxFunc.csproj.CoreCompileInputs.cache
+D:\_Library\CSharp_DLL\MessageBoxFunc\obj\Release\MessageBoxFunc.dll
+D:\_Library\CSharp_DLL\MessageBoxFunc\obj\Release\MessageBoxFunc.pdb
+D:\_Library\CSharp_DLL\MessageBoxFunc.dll
+D:\_Library\CSharp_DLL\MessageBoxFunc.pdb

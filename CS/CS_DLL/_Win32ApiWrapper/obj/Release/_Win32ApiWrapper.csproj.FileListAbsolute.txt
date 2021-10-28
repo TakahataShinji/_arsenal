@@ -1,0 +1,6 @@
+D:\_Library\CSharp_DLL\_Win32ApiWrapper\obj\Release\_Win32ApiWrapper.csproj.CoreCompileInputs.cache
+D:\_Library\CSharp_DLL\_Win32ApiWrapper\obj\Release\_Win32ApiWrapper.dll
+D:\_Library\CSharp_DLL\_Win32ApiWrapper\obj\Release\_Win32ApiWrapper.pdb
+D:\_Library\CSharp_DLL\_Win32ApiWrapper.dll
+D:\_Library\CSharp_DLL\_Win32ApiWrapper.pdb
+D:\_Library\CSharp_DLL\_Win32ApiWrapper\obj\Release\_Win32ApiWrapper.csprojResolveAssemblyReference.cache

@@ -1,0 +1,6 @@
+D:\_Library\CSharp_DLL\FileOperate\obj\Release\FileOperate.csprojResolveAssemblyReference.cache
+D:\_Library\CSharp_DLL\FileOperate\obj\Release\FileOperate.csproj.CoreCompileInputs.cache
+D:\_Library\CSharp_DLL\FileOperate\obj\Release\FileOperate.dll
+D:\_Library\CSharp_DLL\FileOperate\obj\Release\FileOperate.pdb
+D:\_Library\CSharp_DLL\FileOperate.dll
+D:\_Library\CSharp_DLL\FileOperate.pdb

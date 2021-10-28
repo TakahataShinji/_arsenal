@@ -1,0 +1,6 @@
+D:\_Library\CSharp_DLL\General\obj\Release\General.csprojResolveAssemblyReference.cache
+D:\_Library\CSharp_DLL\General\obj\Release\General.csproj.CoreCompileInputs.cache
+D:\_Library\CSharp_DLL\General\obj\Release\General.dll
+D:\_Library\CSharp_DLL\General\obj\Release\General.pdb
+D:\_Library\CSharp_DLL\General.dll
+D:\_Library\CSharp_DLL\General.pdb
