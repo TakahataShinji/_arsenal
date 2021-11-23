@@ -50,7 +50,7 @@ namespace Util
             using (var wc = new WebClient())
             {
                 var vals = new System.Collections.Specialized.NameValueCollection();
-                vals.Add("key1", "val1");
+                vals.Add("key1", "val1");       //< 書きかけ！！
                 res = wc.UploadValues(url, vals);
             }
 
@@ -105,7 +105,7 @@ namespace Util
         public static string PostWebRequest_Json<T>(string url, Dictionary<string, T> dic)
         {
             // データをJSONに変換後、送信
-            string json = JsonFileOperate.ConvertDic2Json<T>(dic);
+            string json = Json_Xml_FileOperate.ConvertDicToJson<T>(dic);
             return PostWebRequest_Json(url, json);
         }
 

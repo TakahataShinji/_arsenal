@@ -183,7 +183,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 例外   | 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static T LoadObjectFromXml<T>(String fileName)
+        public static T LoadObjFromXml<T>(String fileName)
         {
             // シリアライザ生成
             var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
@@ -208,7 +208,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 例外   | 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void SaveObjectToXml<T>(String fileName, T target)
+        public static void SaveObjToXml<T>(String fileName, T target)
         {
             // シリアライザ生成
             var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
