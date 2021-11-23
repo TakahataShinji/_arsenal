@@ -59,6 +59,18 @@ namespace Util
         }
 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        // パスを除いたファイル名を取得する
+        // -------+-----------------------------------------------------
+        // 引数   | String path : [I]検査対象ファイル名
+        // -------+-----------------------------------------------------
+        // 戻り値 | String : パスを除いたファイル名
+        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static String GetFileRawName(String path)
+        {
+            return (new FileInfo(path)).Name;
+        }
+
+        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルの拡張子を変更する
         // -------+-----------------------------------------------------
         // 引数   | String path : [I]検査対象ファイル名
@@ -298,14 +310,16 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 指定されたディレクトリの下位ディレクトリを再帰的に取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path           : [I]対象ディレクトリ
-        //        | List<String>list_Dirs : [O]path のサブディレクトリ一覧
+        // 引数   | String path            : [I]対象ディレクトリ
+        //        | List<String> list_Dirs : [I/O]path のサブディレクトリ一覧
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
+        // -------+-----------------------------------------------------
+        // 引数として渡された list_Dirs の末尾に追記する
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void GetSubDirectories(String path, List<String>list_Dirs)
+        public static void GetSubDirectories(String path, ref List<String> list_Dirs)
         {
             try
             {
@@ -316,7 +330,7 @@ namespace Util
                     list_Dirs.Add(subDir);
 
                     // サブディレクトリに含まれるディレクトリを再帰的に取得
-                    GetSubDirectories(subDir, list_Dirs);
+                    GetSubDirectories(subDir, ref list_Dirs);
                 }
             }
             catch
@@ -578,19 +592,26 @@ namespace Util
         }
 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // ディレクトリに含まれるファイルの一覧を取得する
+        // ディレクトリに含まれるファイルのうち、
+        // パターンに合致するものの一覧を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]対象ディレクトリ
+        // 引数   | String path    : [I]対象ディレクトリ
+        //        | String pattern : [I]ファイルパターン
+        //        |                     null の場合はすべてのファイル
         // -------+-----------------------------------------------------
         // 戻り値 | String[] : ファイル一覧
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String[] GetFiles(String path)
+        public static String[] GetFiles(String path, String pattern = null)
         {
             try
             {
-                return Directory.GetFiles(path);
+                if (pattern == null)
+                {
+                    return Directory.GetFiles(path);
+                }
+                return Directory.GetFiles(path, pattern);
             }
             catch
             {
@@ -601,16 +622,18 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 下位ディレクトリに含まれるファイルの一覧を再帰的に取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path            : [I]対象ディレクトリ
-        //        | List<String>list_Files : [O]path 以下に含まれるファイル一覧
-        //        | bool uncount           : [I]ルートディレクトリ直下のファイルを除外するか
+        // 引数   | String path             : [I]対象ディレクトリ
+        //        | List<String> list_Files : [I/O]path 以下に含まれるファイル一覧
+        //        | bool uncount            : [I]ルートディレクトリ直下のファイルを除外するか
         //        |                             デフォルト - false
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void GetFilesRecursively(String path, List<String> list_Files, bool uncount = false)
+        public static void GetFilesRecursively(String path, 
+                                               ref List<String> list_Files, 
+                                               bool uncount = false)
         {
             try
             {
@@ -623,7 +646,7 @@ namespace Util
                 // サブディレクトリに含まれるファイルを追加(再帰)
                 foreach (String dir in Directory.GetDirectories(path))
                 {
-                    GetFilesRecursively(dir, list_Files);
+                    GetFilesRecursively(dir, ref list_Files);
                 }
             }
             catch
