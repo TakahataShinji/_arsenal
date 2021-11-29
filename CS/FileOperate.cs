@@ -21,13 +21,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルの有無を確認する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]検査対象ファイル名
+        // 引数   | string path : [I]検査対象ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | bool : ファイルの有無
         //        |        true  - 指定されたファイルが存在する
         //        |        false - 指定されたファイルが存在しない
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool FileExists(String path)
+        public static bool FileExists(string path)
         {
             return File.Exists(path);
         }
@@ -35,13 +35,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリの有無を確認する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]検査対象ディレクトリ名
+        // 引数   | string path : [I]検査対象ディレクトリ名
         // -------+-----------------------------------------------------
         // 戻り値 | bool : ディレクトリの有無
         //        |        true  - 指定されたディレクトリが存在する
         //        |        false - 指定されたディレクトリが存在しない
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool DirectoryExists(String path)
+        public static bool DirectoryExists(string path)
         {
             return Directory.Exists(path);
         }
@@ -49,11 +49,11 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルの拡張子を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]検査対象ファイル名
+        // 引数   | string path : [I]検査対象ファイル名
         // -------+-----------------------------------------------------
-        // 戻り値 | String : ファイルの拡張子
+        // 戻り値 | string : ファイルの拡張子
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String GetFileExtension(String path)
+        public static string GetFileExtension(string path)
         {
             return (new FileInfo(path)).Extension;
         }
@@ -61,11 +61,11 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // パスを除いたファイル名を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]検査対象ファイル名
+        // 引数   | string path : [I]検査対象ファイル名
         // -------+-----------------------------------------------------
-        // 戻り値 | String : パスを除いたファイル名
+        // 戻り値 | string : パスを除いたファイル名
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String GetFileRawName(String path)
+        public static string GetFileRawName(string path)
         {
             return (new FileInfo(path)).Name;
         }
@@ -73,19 +73,19 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルの拡張子を変更する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]検査対象ファイル名
+        // 引数   | string path : [I]検査対象ファイル名
         //        |        ext  : [I]変更後の拡張子
         // -------+-----------------------------------------------------
-        // 戻り値 | String : 変更後のファイル名
+        // 戻り値 | string : 変更後のファイル名
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String ConvFileExtension(String path, String ext)
+        public static string ConvFileExtension(string path, string ext)
         {
             try
             {
                 // '.'の前までを抽出
-                String name = path.Substring(0, path.IndexOf('.'));
+                string name = path.Substring(0, path.IndexOf('.'));
 
                 // 変更後拡張子'.'より後を抽出
                 if (ext[0] == '.')
@@ -108,8 +108,8 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルをコピーする
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]コピー元ファイル名
-        //        | String dst : [I]コピー先ファイル名
+        // 引数   | string src : [I]コピー元ファイル名
+        //        | string dst : [I]コピー先ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -117,7 +117,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 同名のファイルがすでに存在する場合は上書きする
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void CopyFile(String src, String dst)
+        public static void CopyFile(string src, string dst)
         {
             try
             {
@@ -132,8 +132,8 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルを指定したディレクトリにコピーする
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]コピー元ファイル名
-        //        | String dst : [I]コピー先ディレクトリ
+        // 引数   | string src : [I]コピー元ファイル名
+        //        | string dst : [I]コピー先ディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -141,7 +141,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 同名のファイルがすでに存在する場合は上書きする
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void CopyFileToDir(String src, String dst)
+        public static void CopyFileToDir(string src, string dst)
         {
             try
             {
@@ -157,14 +157,14 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルを移動する
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]移動元ファイル名
-        //        | String dst : [I]移動先ファイル名
+        // 引数   | string src : [I]移動元ファイル名
+        //        | string dst : [I]移動先ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void MoveFile(String src, String dst)
+        public static void MoveFile(string src, string dst)
         {
             try
             {
@@ -179,14 +179,14 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルを指定したディレクトリに移動する
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]移動元ファイル名
-        //        | String dst : [I]移動先ディレクトリ
+        // 引数   | string src : [I]移動元ファイル名
+        //        | string dst : [I]移動先ディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void MoveFileToDir(String src, String dst)
+        public static void MoveFileToDir(string src, string dst)
         {
             try
             {
@@ -202,13 +202,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルを削除する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]削除対象ファイル名
+        // 引数   | string path : [I]削除対象ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void DeleteFile(String path)
+        public static void DeleteFile(string path)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルのタイムスタンプを更新する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]対象ファイル名
+        // 引数   | string path : [I]対象ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -231,7 +231,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 作成日時・更新日時・最終アクセス日時を現在日時に設定
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void UpdateFileTimeStamp(String path)
+        public static void UpdateFileTimeStamp(string path)
         {
             try
             {
@@ -247,13 +247,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ファイルのサイズ(バイト単位)を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]対象ファイル名
+        // 引数   | string path : [I]対象ファイル名
         // -------+-----------------------------------------------------
         // 戻り値 | Int64 : ファイルサイズ[バイト]
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static Int64 GetFileSize(String path)
+        public static Int64 GetFileSize(string path)
         {
             try
             {
@@ -270,11 +270,11 @@ namespace Util
         // -------+-----------------------------------------------------
         // 引数   | なし
         // -------+-----------------------------------------------------
-        // 戻り値 | String - カレントディレクトリのパス
+        // 戻り値 | string - カレントディレクトリのパス
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String GetCurrentDir()
+        public static string GetCurrentDir()
         {
             try
             {
@@ -289,13 +289,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // カレントディレクトリを変更
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]変更先のディレクトリ
+        // 引数   | string path : [I]変更先のディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void SetCurrentDir(String path)
+        public static void SetCurrentDir(string path)
         {
             try
             {
@@ -310,8 +310,8 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 指定されたディレクトリの下位ディレクトリを再帰的に取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path            : [I]対象ディレクトリ
-        //        | List<String> list_Dirs : [I/O]path のサブディレクトリ一覧
+        // 引数   | string path            : [I]対象ディレクトリ
+        //        | List<string> list_Dirs : [I/O]path のサブディレクトリ一覧
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -319,12 +319,12 @@ namespace Util
         // -------+-----------------------------------------------------
         // 引数として渡された list_Dirs の末尾に追記する
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void GetSubDirectories(String path, ref List<String> list_Dirs)
+        public static void GetSubDirectories(string path, ref List<string> list_Dirs)
         {
             try
             {
                 // path に含まれるサブディレクトリをスキャン
-                foreach (String subDir in Directory.GetDirectories(path))
+                foreach (string subDir in Directory.GetDirectories(path))
                 {
                     // サブディレクトリをリストに追加
                     list_Dirs.Add(subDir);
@@ -342,14 +342,14 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリ構造を再帰的にコピーする
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]コピー元ルートディレクトリ
-        //        | String dst : [I]コピー先ルートディレクトリ
+        // 引数   | string src : [I]コピー元ルートディレクトリ
+        //        | string dst : [I]コピー先ルートディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void CopyDirectory(String srcDir, String dstDir)
+        public static void CopyDirectory(string srcDir, string dstDir)
         {
             try
             {
@@ -360,11 +360,11 @@ namespace Util
                 }
 
                 // コピー元ルートディレクトリに含まれるサブディレクトリをスキャン
-                foreach (String subDir_Src in Directory.GetDirectories(srcDir))
+                foreach (string subDir_Src in Directory.GetDirectories(srcDir))
                 {
                     // コピー先ディレクトリのパスを取得
                     // (コピー先ディレクトリパスのルート部を置換)
-                    String subDir_Dst = subDir_Src.Replace(srcDir, dstDir);
+                    string subDir_Dst = subDir_Src.Replace(srcDir, dstDir);
 
                     // コピー先ディレクトリが既に存在する場合はタイムスタンプ更新
                     if (Directory.Exists(subDir_Dst))
@@ -390,14 +390,14 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリを移動する
         // -------+-----------------------------------------------------
-        // 引数   | String src : [I]移動元ディレクトリ
-        //        | String dst : [I]移動先ディレクトリ
+        // 引数   | string src : [I]移動元ディレクトリ
+        //        | string dst : [I]移動先ディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void MoveDirectory(String src, String dst)
+        public static void MoveDirectory(string src, string dst)
         {
             try
             {
@@ -412,13 +412,13 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリを削除する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]削除対象ディレクトリ
+        // 引数   | string path : [I]削除対象ディレクトリ
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void DeleteDirectory(String path)
+        public static void DeleteDirectory(string path)
         {
             try
             {
@@ -433,7 +433,7 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリのタイムスタンプを更新する
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]対象ディレクトリ名
+        // 引数   | string path : [I]対象ディレクトリ名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -441,7 +441,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 作成日時・更新日時・最終アクセス日時を現在日時に設定
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void UpdateDirectoryTimeStamp(String path)
+        public static void UpdateDirectoryTimeStamp(string path)
         {
             try
             {
@@ -458,7 +458,7 @@ namespace Util
         // ディレクトリのタイムスタンプを更新する
         // (サブディレクトリを再帰的に走査)
         // -------+-----------------------------------------------------
-        // 引数   | String path : [I]対象ディレクトリ名
+        // 引数   | string path : [I]対象ディレクトリ名
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -466,7 +466,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 作成日時・更新日時・最終アクセス日時を現在日時に設定
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void UpdateDirectoryTimeStampRecursively(String path)
+        public static void UpdateDirectoryTimeStampRecursively(string path)
         {
             try
             {
@@ -474,13 +474,13 @@ namespace Util
                 UpdateDirectoryTimeStamp(path);
 
                 // 直下にあるファイルのタイムスタンプを更新
-                foreach (String file in GetFiles(path))
+                foreach (string file in GetFiles(path))
                 {
                     UpdateFileTimeStamp(file);
                 }
 
                 // サブディレクトリを再帰的に走査
-                foreach (String subDir in Directory.GetDirectories(path))
+                foreach (string subDir in Directory.GetDirectories(path))
                 {
                     UpdateDirectoryTimeStampRecursively(subDir);
                 }
@@ -534,7 +534,7 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリのサイズ(バイト単位)を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path  : [I]対象ディレクトリのパス
+        // 引数   | string path  : [I]対象ディレクトリのパス
         //        | bool uncount : [I]ルートディレクトリ直下のファイルを除外するか
         //        |                   デフォルト - false
         // -------+-----------------------------------------------------
@@ -542,7 +542,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static Int64 GetDirectorySize(String path, bool uncount = false)
+        public static Int64 GetDirectorySize(string path, bool uncount = false)
         {
             try
             {
@@ -557,7 +557,7 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // ディレクトリに含まれるファイル数を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path  : [I]対象ディレクトリのパス
+        // 引数   | string path  : [I]対象ディレクトリのパス
         //        | bool uncount : [I]ルートディレクトリ直下のファイルを除外するか
         //        |                   デフォルト - false
         // -------+-----------------------------------------------------
@@ -565,7 +565,7 @@ namespace Util
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static Int64 GetNumberOfFiles(String path, bool uncount = false)
+        public static Int64 GetNumberOfFiles(string path, bool uncount = false)
         {
             Int64 num = 0;
 
@@ -578,7 +578,7 @@ namespace Util
                 }
 
                 // サブディレクトリに含まれるファイル数を加算(再帰)
-                foreach (String dir in Directory.GetDirectories(path))
+                foreach (string dir in Directory.GetDirectories(path))
                 {
                     num += GetNumberOfFiles(dir);
                 }
@@ -595,19 +595,19 @@ namespace Util
         // ディレクトリに含まれるファイルのうち、
         // パターンに合致するものの一覧を取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path    : [I]対象ディレクトリ
-        //        | String pattern : [I]ファイルパターン
+        // 引数   | string path    : [I]対象ディレクトリ
+        //        | string pattern : [I]ファイルパターン
         //        |                     null の場合はすべてのファイル
         // -------+-----------------------------------------------------
-        // 戻り値 | String[] : ファイル一覧
+        // 戻り値 | string[] : ファイル一覧
         // -------+-----------------------------------------------------
         // 例外   | Exception
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String[] GetFiles(String path, String pattern = null)
+        public static string[] GetFiles(string path, string pattern = "")
         {
             try
             {
-                if (pattern == null)
+                if (pattern == "")
                 {
                     return Directory.GetFiles(path);
                 }
@@ -622,8 +622,8 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 下位ディレクトリに含まれるファイルの一覧を再帰的に取得する
         // -------+-----------------------------------------------------
-        // 引数   | String path             : [I]対象ディレクトリ
-        //        | List<String> list_Files : [I/O]path 以下に含まれるファイル一覧
+        // 引数   | string path             : [I]対象ディレクトリ
+        //        | List<string> list_Files : [I/O]path 以下に含まれるファイル一覧
         //        | bool uncount            : [I]ルートディレクトリ直下のファイルを除外するか
         //        |                             デフォルト - false
         // -------+-----------------------------------------------------
@@ -631,8 +631,8 @@ namespace Util
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void GetFilesRecursively(String path, 
-                                               ref List<String> list_Files, 
+        public static void GetFilesRecursively(string path, 
+                                               ref List<string> list_Files, 
                                                bool uncount = false)
         {
             try
@@ -644,7 +644,7 @@ namespace Util
                 }
 
                 // サブディレクトリに含まれるファイルを追加(再帰)
-                foreach (String dir in Directory.GetDirectories(path))
+                foreach (string dir in Directory.GetDirectories(path))
                 {
                     GetFilesRecursively(dir, ref list_Files);
                 }

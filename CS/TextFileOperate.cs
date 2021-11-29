@@ -16,9 +16,9 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // テキストファイルを読み込む
         // -------+-----------------------------------------------------
-        // 引数   | String fileName : 読み込むファイル名
+        // 引数   | string fileName : [I]読み込むファイル名
         // -------+-----------------------------------------------------
-        // 戻り値 | String : 読み込んだ文字列
+        // 戻り値 | string : 読み込んだ文字列
         // -------+-----------------------------------------------------
         // 例外   | ArgumentException
         //        | ArgumentNullException
@@ -26,9 +26,9 @@ namespace Util
         //        | DirectoryNotFoundException
         //        | NotSupportedException
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String ReadTextFile(String fileName)
+        public static string ReadTextFile(string fileName)
         {
-            String ret = "";
+            string ret = "";
 
             // テキストファイルを開く
             // (using ステートメントにより、例外発生時も自動的にリソースが解放される)
@@ -44,11 +44,11 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // テキストファイルに文字列を書き込む(上書き・追記)
         // -------+-----------------------------------------------------
-        // 引数   | String fileName : 書き込む対象のファイル名
-        //        | String text     : 書き込む文字列
-        //        | bool append     : 書き込みモード
-        //        |                   true  - 追記
-        //        |                   false - 上書き
+        // 引数   | string fileName : [I]書き込む対象のファイル名
+        //        | string text     : [I]書き込む文字列
+        //        | bool append     : [I]書き込みモード
+        //        |                      true  - 追記
+        //        |                      false - 上書き
         // -------+-----------------------------------------------------
         // 戻り値 | なし
         // -------+-----------------------------------------------------
@@ -60,7 +60,7 @@ namespace Util
         //        | PathTooLongException
         //        | System.Security.SecurityException
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void WriteTextFile(String fileName, String text, bool append = false)
+        public static void WriteTextFile(string fileName, string text, bool append = false)
         {
             // テキストファイルを上書きモードで開く
             // (using ステートメントにより、例外発生時も自動的にリソースが解放される)
@@ -74,11 +74,11 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // テキストファイル中の指定した文字列を置換する
         // -------+-----------------------------------------------------
-        // 引数   | String fileName : 読み込むファイル名
-        //        | String oldStr   : 置換前の文字列
-        //        | String newStr   : 置換後の文字列
+        // 引数   | string fileName : [I]読み込むファイル名
+        //        | string oldStr   : [I]置換前の文字列
+        //        | string newStr   : [I]置換後の文字列
         // -------+-----------------------------------------------------
-        // 戻り値 | String : 読み込んだ文字列
+        // 戻り値 | string : 読み込んだ文字列
         // -------+-----------------------------------------------------
         // 例外   | UnauthorizedAccessException
         //        | ArgumentException
@@ -90,10 +90,10 @@ namespace Util
         //        | FileNotFoundException
         //        | NotSupportedException
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void ReplaceText(String fileName, String oldStr, String newStr)
+        public static void ReplaceText(string fileName, string oldStr, string newStr)
         {
             // ファイルの内容を読み込む
-            String content = ReadTextFile(fileName);
+            string content = ReadTextFile(fileName);
 
             // 含まれる oldStr をすべて newStr で置換
             content = content.Replace(oldStr, newStr);

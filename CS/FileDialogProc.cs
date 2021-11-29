@@ -1,6 +1,6 @@
 ﻿// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 //
-// FileDialog
+// FileDialogProc
 //
 // [static]ファイル・フォルダ選択ダイアログの操作
 //
@@ -14,7 +14,7 @@ using System.Text;
 
 namespace Util
 {
-    static class FileDialog
+    static class FileDialogProc
     {
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // public メソッド (static)

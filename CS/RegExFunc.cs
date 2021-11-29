@@ -5,8 +5,6 @@
 // [static]正規表現
 //
 // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Util
@@ -45,28 +43,64 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 文字列がパターンにマッチするかを確認する
+        // [static]文字列がパターンにマッチするかを確認する
         // -------+-----------------------------------------------------
-        // 引数   | String target  : [I]検査対象文字列
-        //        | String pattern : [I]パターン
+        // 引数   | string    target  : [I]検査対象文字列
+        //        | string    pattern : [I]パターン
+        //        | E_Options options : [I]検索オプション
+        //        |                        None       - オプション無し(デフォルト)
+        //        |                        IgnoreCase - 大文字と小文字を区別しない
+        //        |                        Multiline  - 複数行モード
+        //        |                        Singleline - 単一行モード
         // -------+-----------------------------------------------------
-        // 戻り値 | Boolean : 検査結果
-        //        |           true  - マッチする
-        //        |           false - マッチしない、またはパターンが不正
+        // 戻り値 | bool : 検査結果
+        //        |        true  - マッチする
+        //        |        false - マッチしない、またはパターンが不正
         // -------+-----------------------------------------------------
         // 例外   | あり
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static Boolean IsMatch(String target, String pattern)
+        public static bool IsMatch(string target,
+                                   string pattern,
+                                   E_Options options = E_Options.None)
         {
-            return Regex.IsMatch(target, pattern);
+            return Regex.IsMatch(target, pattern, dic_Options[options]);
         }
 
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 文字列中のパターンにマッチする部分を置換する
+        // [static]文字列中のパターンにマッチした箇所を抜き出す
         // -------+-----------------------------------------------------
-        // 引数   | String input       : [I]置換される文字列
-        //        | String pattern     : [I]パターン
-        //        | String replacement : [I]置換する文字列
+        // 引数   | string    target  : [I]検査対象文字列
+        //        | string    pattern : [I]パターン
+        //        | E_Options options : [I]検索オプション
+        //        |                        None       - オプション無し(デフォルト)
+        //        |                        IgnoreCase - 大文字と小文字を区別しない
+        //        |                        Multiline  - 複数行モード
+        //        |                        Singleline - 単一行モード
+        // -------+-----------------------------------------------------
+        // 戻り値 | string[] : マッチ箇所一覧
+        // -------+-----------------------------------------------------
+        // 例外   | あり
+        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static string[] Matches(string target, 
+                                       string pattern,
+                                       E_Options options = E_Options.None)
+        {
+            var matches = Regex.Matches(target, pattern, dic_Options[options]);
+            string[] ret = new string[matches.Count];
+            for(int i = 0; i < ret.Length; ++i)
+            {
+                ret[i] = matches[i].Value;
+            }
+
+            return ret;
+        }
+
+        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        // [static]文字列中のパターンにマッチする部分を置換する
+        // -------+-----------------------------------------------------
+        // 引数   | string input       : [I]置換される文字列
+        //        | string pattern     : [I]パターン
+        //        | string replacement : [I]置換する文字列
         //        | E_Options options  : [I]検索オプション
         //        |                         None       - オプション無し(デフォルト)
         //        |                         IgnoreCase - 大文字と小文字を区別しない
@@ -77,9 +111,9 @@ namespace Util
         // -------+-----------------------------------------------------
         // 例外   | あり
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static String Replace(String input,
-                                     String pattern,
-                                     String replacement,
+        public static string Replace(string input,
+                                     string pattern,
+                                     string replacement,
                                      E_Options options = E_Options.None)
         {
             return Regex.Replace(input, pattern, replacement, dic_Options[options]);
@@ -98,11 +132,11 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // コンストラクタ
         // -------+-----------------------------------------------------
-        // 引数   | String pattern : [I]保持するパターン
+        // 引数   | string pattern : [I]保持するパターン
         // -------+-----------------------------------------------------
         // 例外   | あり
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public RegExFuncCompiled(String pattern)
+        public RegExFuncCompiled(string pattern)
         {
             // 正規表現オブジェクト生成
             core = new Regex(pattern, RegexOptions.Compiled);
@@ -115,15 +149,15 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 文字列が保持しているパターンにマッチするかを確認する
         // -------+-----------------------------------------------------
-        // 引数   | String target  : [I]検査対象文字列
+        // 引数   | string target  : [I]検査対象文字列
         // -------+-----------------------------------------------------
-        // 戻り値 | Boolean : 検査結果
-        //        |           true  - マッチする
-        //        |           false - マッチしない、またはパターンが不正
+        // 戻り値 | bool : 検査結果
+        //        |        true  - マッチする
+        //        |        false - マッチしない、またはパターンが不正
         // -------+-----------------------------------------------------
         // 例外   | あり
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public Boolean IsMatch(String target)
+        public bool IsMatch(string target)
         {
             return core.IsMatch(target);
         }
@@ -131,17 +165,17 @@ namespace Util
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // 文字列中のパターンにマッチする部分を置換する
         // -------+-----------------------------------------------------
-        // 引数   | String input       : [I]置換される文字列
-        //        | String replacement : [I]置換する文字列
+        // 引数   | string input       : [I]置換される文字列
+        //        | string replacement : [I]置換する文字列
         // -------+-----------------------------------------------------
         // 戻り値 | String : 置換後の文字列
         // -------+-----------------------------------------------------
         // 例外   | あり
         // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public String Replace(String input, String replacement)
+        public string Replace(string input, string replacement)
         {
             return core.Replace(input, replacement);
         }
-    }
 
-}
+    }       // static class RegExFunc
+}       // namespace Util
