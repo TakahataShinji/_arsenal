@@ -182,6 +182,11 @@ namespace Util
 
             using (var p = Process.Start(sInfo))
             {
+                if (p == null)
+                {
+                    return String.Empty;
+                }
+
                 // 標準出力を読み取る
                 string output = p.StandardOutput.ReadToEnd();
 

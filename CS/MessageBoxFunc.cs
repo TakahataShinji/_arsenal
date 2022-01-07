@@ -1,23 +1,22 @@
-﻿// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-//
-// MessageBoxFunc
-//
-// [static]メッセージボックス処理
-//
-// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Util
 {
+    /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+    /// <summary>
+    /// [static]メッセージボックス処理
+    /// </summary>
+    /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
     static class MessageBoxFunc
     {
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 定数
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // メッセージボックス処理結果(押されたボタン)
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// public 定数
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// メッセージボックス処理結果(押されたボタン)
+        /// </summary>
         public enum E_MsgBoxResult
         {
             E_MSGBOX_OK,            //< 押されたボタン : 「OK」
@@ -26,7 +25,12 @@ namespace Util
             E_MSGBOX_NO,            //< 押されたボタン : 「いいえ」
         };
 
-        // DialogResult と E_MsgBoxResult の変換辞書
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// private 定数
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// メッセージボックス処理結果変換テーブル
+        /// </summary>
         private static Dictionary<DialogResult, E_MsgBoxResult> D_MsgBoxResult = new Dictionary<DialogResult, E_MsgBoxResult>()
         {
             { DialogResult.OK,      E_MsgBoxResult.E_MSGBOX_OK      },      //< 「OK」
@@ -35,72 +39,57 @@ namespace Util
             { DialogResult.No,      E_MsgBoxResult.E_MSGBOX_NO      },      //< 「いいえ」
         };
 
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // public メソッド (static)
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// public メソッド (static)
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 「情報」メッセージボックス表示
-        // -------+-----------------------------------------------------
-        // 引数   | String msg   : 表示するメッセ―ジ
-        //        | String title : メッセージボックスの表題
-        //        |                デフォルト - "情報"
-        // -------+-----------------------------------------------------
-        // 戻り値 | なし
-        // -------+-----------------------------------------------------
-        // 「情報」アイコン、「OK」ボタンを表示
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void ShowInfoMsgBox(String msg, String title = "情報")
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static]「情報」メッセージボックス表示
+        /// </summary>
+        /// <param name="msg">表示するメッセージ</param>
+        /// <param name="title">メッセージボックスの表題</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void ShowInfoMsgBox(string msg, string title = "情報")
         {
             MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 「警告」メッセージボックス表示
-        // -------+-----------------------------------------------------
-        // 引数   | String msg   : 表示するメッセ―ジ
-        //        | String title : メッセージボックスの表題
-        //        |                デフォルト - "警告"
-        // -------+-----------------------------------------------------
-        // 戻り値 | なし
-        // -------+-----------------------------------------------------
-        // 「警告」アイコン、「OK」ボタンを表示
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void ShowWarnMsgBox(String msg, String title = "警告")
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static]「警告」メッセージボックス表示
+        /// </summary>
+        /// <param name="msg">表示するメッセージ</param>
+        /// <param name="title">メッセージボックスの表題</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void ShowWarnMsgBox(string msg, string title = "警告")
         {
             MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 「エラー」メッセージボックス表示
-        // -------+-----------------------------------------------------
-        // 引数   | String msg   : 表示するメッセ―ジ
-        //        | String title : メッセージボックスの表題
-        //        |                デフォルト - "警告"
-        // -------+-----------------------------------------------------
-        // 戻り値 | なし
-        // -------+-----------------------------------------------------
-        // 「エラー」アイコン、「OK」ボタンを表示
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static void ShowErrorMsgBox(String msg, String title = "エラー")
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static]「エラー」メッセージボックス表示
+        /// </summary>
+        /// <param name="msg">表示するメッセージ</param>
+        /// <param name="title">メッセージボックスの表題</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void ShowErrorMsgBox(string msg, string title = "エラー")
         {
             MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 問い合わせメッセージボックス表示
-        // -------+-----------------------------------------------------
-        // 引数   | String msg   : 表示するメッセ―ジ
-        //        | String title : メッセージボックスの表題
-        //        |                デフォルト - "確認"
-        // -------+-----------------------------------------------------
-        // 戻り値 | E_MsgBoxResult : 押されたボタン
-        //        |                  E_MSGBOX_YES - 「はい」
-        //        |                  E_MSGBOX_NO  - 「いいえ」
-        // -------+-----------------------------------------------------
-        // 「情報」アイコン、「はい」、「いいえ」ボタンを表示
-        // - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static E_MsgBoxResult ShowYesNoMsgBox(String msg, String title = "確認")
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static]問い合わせメッセージボックス表示
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="title"></param>
+        /// <returns>押されたボタン<br/>
+        ///          E_MsgBoxResult.E_MSGBOX_YES - 「はい」<br/>
+        ///          E_MsgBoxResult.E_MSGBOX_NO  - 「いいえ」</returns>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static E_MsgBoxResult ShowYesNoMsgBox(string msg, string title = "確認")
         {
             // メッセージボックス表示、押されたボタンを取得
             DialogResult ret = MessageBox.Show(msg, title, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
