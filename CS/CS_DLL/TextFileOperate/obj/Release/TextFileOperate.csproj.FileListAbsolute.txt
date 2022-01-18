@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\TextFileOperate\obj\Release\TextFileOperate.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\TextFileOperate\obj\Release\TextFileOperate.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\TextFileOperate\obj\Release\TextFileOperate.dll
-D:\_Library\CSharp_DLL\TextFileOperate\obj\Release\TextFileOperate.pdb
-D:\_Library\CSharp_DLL\TextFileOperate.dll
-D:\_Library\CSharp_DLL\TextFileOperate.pdb

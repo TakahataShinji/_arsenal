@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\HerokuWrapper\obj\Release\HerokuWrapper.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\HerokuWrapper\obj\Release\HerokuWrapper.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\HerokuWrapper\obj\Release\HerokuWrapper.dll
-D:\_Library\CSharp_DLL\HerokuWrapper\obj\Release\HerokuWrapper.pdb
-D:\_Library\CSharp_DLL\HerokuWrapper.dll
-D:\_Library\CSharp_DLL\HerokuWrapper.pdb

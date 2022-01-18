@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\FirefoxWrapper\obj\Release\FirefoxWrapper.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\FirefoxWrapper\obj\Release\FirefoxWrapper.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\FirefoxWrapper\obj\Release\FirefoxWrapper.dll
-D:\_Library\CSharp_DLL\FirefoxWrapper\obj\Release\FirefoxWrapper.pdb
-D:\_Library\CSharp_DLL\FirefoxWrapper.dll
-D:\_Library\CSharp_DLL\FirefoxWrapper.pdb

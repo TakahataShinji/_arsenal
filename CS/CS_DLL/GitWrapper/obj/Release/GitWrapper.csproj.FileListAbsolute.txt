@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\GitWrapper\obj\Release\GitWrapper.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\GitWrapper\obj\Release\GitWrapper.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\GitWrapper\obj\Release\GitWrapper.dll
-D:\_Library\CSharp_DLL\GitWrapper\obj\Release\GitWrapper.pdb
-D:\_Library\CSharp_DLL\GitWrapper.dll
-D:\_Library\CSharp_DLL\GitWrapper.pdb

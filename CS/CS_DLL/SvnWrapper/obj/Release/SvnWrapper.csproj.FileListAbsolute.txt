@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\SvnWrapper\obj\Release\SvnWrapper.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\SvnWrapper\obj\Release\SvnWrapper.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\SvnWrapper\obj\Release\SvnWrapper.dll
-D:\_Library\CSharp_DLL\SvnWrapper\obj\Release\SvnWrapper.pdb
-D:\_Library\CSharp_DLL\SvnWrapper.dll
-D:\_Library\CSharp_DLL\SvnWrapper.pdb

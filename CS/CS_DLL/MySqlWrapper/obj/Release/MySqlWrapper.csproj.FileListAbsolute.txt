@@ -1,6 +1,0 @@
-D:\_Library\CSharp_DLL\MySqlWrapper\obj\Release\MySqlWrapper.csprojResolveAssemblyReference.cache
-D:\_Library\CSharp_DLL\MySqlWrapper\obj\Release\MySqlWrapper.csproj.CoreCompileInputs.cache
-D:\_Library\CSharp_DLL\MySqlWrapper\obj\Release\MySqlWrapper.dll
-D:\_Library\CSharp_DLL\MySqlWrapper\obj\Release\MySqlWrapper.pdb
-D:\_Library\CSharp_DLL\MySqlWrapper.dll
-D:\_Library\CSharp_DLL\MySqlWrapper.pdb
