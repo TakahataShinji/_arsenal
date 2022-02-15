@@ -1,62 +1,71 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Fsm
 {
     /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+    /// 型定義
+    /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+
+    /// <summary>FSMイベントハンドラ(デリゲート)</summary>
+    public delegate void FsmHandler();
+
+    /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
     /// <summary>
-    /// 汎用FSMモジュール
+    /// 汎用FSM(有限状態機械)モジュール
     /// </summary>
     /// <remarks>
-    /// 状態一覧(Enum)、遷移契機(イベント)一覧(Enum)、<br/>
-    /// イベントハンドラ一覧(Dictionary)の定義が必要<br/>
-    /// イベントハンドラ一覧<br/>
-    /// キー : タプル(状態(Enum), イベント(Enum))<br/>
-    /// 値 : デリゲート(FsmHandler)<br/>
+    /// 使用に当たっては状態遷移表の定義が必要
     /// </remarks>
     /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
     public class FsmCore
     {
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// public デリゲート型定義
+        /// public プロパティ
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // FSMイベントハンドラ
-        public delegate void FsmHandler();
+
+        /// <summary>内部状態</summary>
+        public Enum State { get; set; }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         /// private メンバ
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // 内部状態
-        private Enum m_State;
-
-        // 状態・イベント vs FSMイベントハンドラ
-        private readonly Dictionary<(Enum fsmState, Enum fsmEvent), FsmHandler> m_Dic_Fsm;
+        // 状態遷移表 ( (現在状態・イベント) vs (遷移先状態・付随処理) )
+        private readonly Dictionary<(Enum fsmState, Enum fsmEvent),
+                                    (Enum? newState, FsmHandler? fsmHandler)> m_FsmMatrix;
 
         // イベントキュー
-        private ConcurrentQueue<Enum> m_Que_FsmEvents = new ConcurrentQueue<Enum>();
+        private readonly ConcurrentQueue<Enum> m_Que_FsmEvents = new ConcurrentQueue<Enum>();
 
         // シンクロナイザ
-        private ManualResetEventSlim m_Mres = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim m_Mres = new ManualResetEventSlim(false);
 
-        private Task m_FsmThread;
+        // FSMスレッド
+        private readonly Task m_FsmThread;
 
         // FSMスレッド停止要求
         private bool m_AbortReq = false;
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// public メソッド
+        /// コンストラクタ・デストラクタ
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="initialState">内部状態の初期値</param>
-        /// <param name="dic_Fsm">状態・イベントに対するハンドラの一覧</param>
-        public FsmCore(Enum initialState,
-                       Dictionary<(Enum, Enum), FsmHandler> dic_Fsm)
+        /// <param name="dic_Fsm">状態遷移表</param>
+        public FsmCore(Enum initialState, 
+                       Dictionary<(Enum fsmState, Enum fsmEvent),
+                                  (Enum? newState, FsmHandler? fsmHandler)> dic_Fsm)
         {
-            // 内部状態、ハンドラ一覧初期化
-            m_State = initialState;
-            m_Dic_Fsm = new Dictionary<(Enum, Enum), FsmHandler>(dic_Fsm);
+            // 内部状態、状態遷移表初期化
+            State = initialState;
+            m_FsmMatrix = new Dictionary<(Enum fsmState, Enum fsmEvent),
+                                         (Enum? newState, FsmHandler? fsmHandler)>(dic_Fsm);
 
             // FSMスレッド起動
             m_FsmThread = Task.Run(() => SolveEvent());
@@ -71,11 +80,15 @@ namespace Fsm
             m_Mres.Dispose();
         }
 
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// public メソッド
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+
         /// <summary>
         /// FSMイベント発行
         /// </summary>
         /// <param name="fsmEvent">発行するイベント</param>
-        public void PostFsmEvent(Enum fsmEvent)
+        public void RaiseFsmEvent(Enum fsmEvent)
         {
             // イベントをエンキュー、シグナルセット
             m_Que_FsmEvents.Enqueue(fsmEvent);
@@ -85,13 +98,11 @@ namespace Fsm
         /// <summary>
         /// FSM停止
         /// </summary>
-        public async void StopFsm()
+        public void StopFsm()
         {
-            // 停止要求オン、シグナルセット
+            // スレッド停止要求オン、シグナルセット
             m_AbortReq = true;
             m_Mres.Set();
-
-            await m_FsmThread;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -99,25 +110,38 @@ namespace Fsm
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 
         /// <summary>
-        /// FSMスレッド
+        /// FSMスレッド(イベントの処理)
         /// </summary>
         private void SolveEvent()
         {
             // 停止要求がオフの間無限ループ
             while (!m_AbortReq)
             {
-                // イベントのデキュー成功時
-                if (m_Que_FsmEvents.TryDequeue(out var fsmEvent))
+                // イベントのデキュー成功時は
+                // 状態遷移表から現在の状態とイベントに対応する
+                // 遷移先状態・付随処理を取得
+                // ⇒ 取得成功(値の定義あり)時のみ状態遷移、付随処理実行
+                if (m_Que_FsmEvents.TryDequeue(out var fsmEvent) &&
+                    m_FsmMatrix.TryGetValue((State, fsmEvent), out var item))
                 {
-                    // 対応するイベントハンドラが有効(非null)ならば実行
-                    var fsmHandler = m_Dic_Fsm[(m_State, fsmEvent)];
+                    var newState = item.newState;
+                    var fsmHandler = item.fsmHandler;
+
+                    // 状態遷移(内部状態更新)
+                    if (newState != null)
+                    {
+                        State = newState;
+                    }
+
+                    // 付随処理実行
                     if (fsmHandler != null)
                     {
                         fsmHandler();
                     }
                 }
-                // デキュー失敗、かつキューが空の場合
-                else if (m_Que_FsmEvents.IsEmpty)
+
+                // キューが空の場合
+                if (m_Que_FsmEvents.IsEmpty)
                 {
                     // シグナルをリセット、シグナル待ちに移行(タスク休眠)
                     m_Mres.Reset();
@@ -126,6 +150,6 @@ namespace Fsm
             }
         }
 
-    }       // public class FsmCore<E_FsmStates, E_FsmEvents>
+    }       // public class FsmCore
 
 }       // namespace Fsm

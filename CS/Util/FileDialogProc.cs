@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
-using System.Text;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Util
 {
@@ -10,59 +6,118 @@ namespace Util
     /// <summary>
     /// [static] ファイル・フォルダ選択ダイアログの操作
     /// </summary>
+    /// WindowsAPICodePack-Core
+    /// WindowsAPICodePack-Shell
     /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
     static class FileDialogProc
     {
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // public メソッド (static)
+        /// public メソッド
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         /// <summary>
         /// [static] ファイル選択ダイアログを開く
         /// </summary>
-        /// 
-        /// <param name="fileName"> [I]初期ファイル名<br/>
-        ///                         [O]選択されたファイル名</param>
-        /// <param name="initDir">  [I]初期ディレクトリ</param>
-        /// <param name="title">    [I]ダイアログの表題</param>
-        /// <param name="filter">   [I]フィルタ(ファイルの種類)</param>
-        /// <param name="filterIdx">[I]初期選択フィルタ(1起算)</param>
-        /// <returns>処理成否<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// <remarks>フィルタは "(任意のキャプション)|*.(拡張子)" で表現<br/>
-        /// 複数のフィルタパターンを設定する場合は ";" で連結<br/>
-        /// (例 "テキストファイル|*.txt;XMLファイル|*.xml" )</remarks>
+        /// <param name="defaultFileName"> 初期ファイル名</param>
+        /// <param name="initDir">         初期ディレクトリ</param>
+        /// <param name="title">           ダイアログの表題</param>
+        /// <param name="filters">         フィルタ(ファイルの種類)<br/>
+        ///                                dispName   : フィルタの表示名<br/>
+        ///                                extensions : 拡張子(複数指定可)</param>
+        /// <returns>選択されたファイル名<br/>
+        ///          キャンセル・失敗時はnull</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool ShowOpenFileDialog(ref string fileName,
-                                                  string initDir = "",
-                                                  string title = "ファイルを開く",
-                                                  string filter = "すべてのファイル(*.*)|*.*",
-                                                  int filterIdx = 1)
+        public static string? ShowOpenFileDialog(string defaultFileName = "",
+                                                 string initDir = "",
+                                                 string title = "ファイルを開く",
+                                                 (string dispName, string[] extensions)[]? filters = null)
         {
             try
             {
-                // ダイアログオブジェクト生成
-                OpenFileDialog ofd = new OpenFileDialog();
+                var dialog = new CommonOpenFileDialog(title);
 
-                // パラメータ設定
-                ofd.FileName = fileName;                //< 初期ファイル名
-                ofd.InitialDirectory = initDir;         //< 初期ディレクトリ
-                ofd.Title = title;                      //< ダイアログの表題
-                ofd.Filter = filter;                    //< フィルタ
-                ofd.FilterIndex = filterIdx;            //< 初期選択フィルタ
+                dialog.DefaultFileName = defaultFileName;
+                dialog.InitialDirectory = initDir;
 
-                // 「OK」が押された場合、ファイル名を更新
-                if (ofd.ShowDialog() == DialogResult.OK)
+                // フィルタ設定
+                if (filters != null)
                 {
-                    fileName = ofd.FileName;
+                    foreach (var f in filters)
+                    {
+                        var st_f = new CommonFileDialogFilter();
+
+                        st_f.DisplayName = f.dispName;
+                        foreach (var e in f.extensions)
+                        {
+                            st_f.Extensions.Add(e);
+                        }
+
+                        dialog.Filters.Add(st_f);
+                    }
                 }
-                return true;
+
+                // ダイアログを開く
+                // 「OK」が押された場合、選択されたファイル名を返す
+                // それ以外は null を返す
+                return (dialog.ShowDialog() == CommonFileDialogResult.Ok) ? dialog.FileName : null;
             }
             catch
             {
-                return false;
+                return null;
+            }
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ファイル保存ダイアログを開く
+        /// </summary>
+        /// <param name="defaultFileName"> 初期ファイル名</param>
+        /// <param name="initDir">         初期ディレクトリ</param>
+        /// <param name="title">           ダイアログの表題</param>
+        /// <param name="filters">         フィルタ(ファイルの種類)<br/>
+        ///                                dispName   : フィルタの表示名<br/>
+        ///                                extensions : 拡張子(複数指定可)</param>
+        /// <returns>保存したファイル名<br/>
+        ///          キャンセル・失敗時はnull</returns>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static string? ShowSaveFileDialog(string defaultFileName = "",
+                                                 string initDir = "",
+                                                 string title = "名前を付けて保存",
+                                                 (string dispName, string[] extensions)[]? filters = null)
+        {
+            try
+            {
+                var dialog = new CommonSaveFileDialog(title);
+
+                dialog.DefaultFileName = defaultFileName;
+                dialog.InitialDirectory = initDir;
+
+                // フィルタ設定
+                if (filters != null)
+                {
+                    foreach (var f in filters)
+                    {
+                        var st_f = new CommonFileDialogFilter();
+
+                        st_f.DisplayName = f.dispName;
+                        foreach (var e in f.extensions)
+                        {
+                            st_f.Extensions.Add(e);
+                        }
+
+                        dialog.Filters.Add(st_f);
+                    }
+                }
+
+                // ダイアログを開く
+                // 「OK」が押された場合、選択されたファイル名を返す
+                // それ以外は null を返す
+                return (dialog.ShowDialog() == CommonFileDialogResult.Ok) ? dialog.FileName : null;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -70,37 +125,29 @@ namespace Util
         /// <summary>
         /// [static] フォルダ選択ダイアログを開く
         /// </summary>
-        /// 
-        /// <param name="path"> [I]初期フォルダ<br/>
-        ///                     [O]選択されたフォルダ</param>
-        /// <param name="title">[I]ダイアログの表題</param>
-        /// <returns>処理成否<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// <remarks>ルートディレクトリはデスクトップ</remarks>
+        /// <param name="initDir">         初期ディレクトリ</param>
+        /// <param name="title">           ダイアログの表題</param>
+        /// <returns>選択されたフォルダ<br/>
+        ///          キャンセル・失敗時はnull</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool ShowFolderBrowserDialog(ref string path, string title = "フォルダを開く")
+        public static string? ShowFolderBrowserDialog(string initDir = "",
+                                                      string title = "フォルダを開く")
         {
             try
             {
-                // ダイアログオブジェクト生成
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                var dialog = new CommonOpenFileDialog(title);
 
-                // パラメータ設定
-                fbd.RootFolder = Environment.SpecialFolder.Desktop;     //< ルートディレクトリ : デスクトップ
-                fbd.SelectedPath = path;                                //< 初期ディレクトリ
-                fbd.Description = title;                                //< ダイアログの表題
+                dialog.IsFolderPicker = true;
+                dialog.InitialDirectory = initDir;
 
-                // 「OK」が押された場合、フォルダ名を更新
-                if (fbd.ShowDialog() == DialogResult.OK)
-                {
-                    path = fbd.SelectedPath;
-                }
-                return true;
+                // ダイアログを開く
+                // 「OK」が押された場合、選択されたファイル名を返す
+                // それ以外は null を返す
+                return (dialog.ShowDialog() == CommonFileDialogResult.Ok) ? dialog.FileName : null;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 

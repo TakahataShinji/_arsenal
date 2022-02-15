@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace Util
 {
@@ -38,26 +39,12 @@ namespace Util
             // カレントディレクトリの取得
             get
             {
-                try
-                {
-                    return Directory.GetCurrentDirectory();
-                }
-                catch
-                {
-                    return String.Empty;
-                }
+                return Directory.GetCurrentDirectory();
             }
             // カレントディレクトリの設定
             set
             {
-                try
-                {
-                    Directory.SetCurrentDirectory(value);
-                }
-                catch
-                {
-                    // 何もしない
-                }
+                Directory.SetCurrentDirectory(value);
             }
         }
 
@@ -67,30 +54,42 @@ namespace Util
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         /// <summary>
+        /// 実行中アセンブリのパスを取得する
+        /// </summary>
+        /// <returns>実行中アセンブリのパス</returns>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static string GetExecutingPath()
+        {
+            return Assembly.GetExecutingAssembly().Location;
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// 実行中アセンブリの親ディレクトリを取得する
+        /// </summary>
+        /// <returns>実行中アセンブリのパス</returns>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static string? GetExecutingDir()
+        {
+            return new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName;
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
         /// [static] パスの属性を取得する
         /// </summary>
         /// <param name="path">[I]検査対象パス</param>
         /// <returns>パスの属性<br/>
         ///          E_Attributes.FILE      - ファイル<br/>
-        ///          E_Attributes.DIRECTORY - ディレクトリ<br/>
-        ///          E_Attributes.NONE      - 無し(不明または存在しない)</returns>
+        ///          E_Attributes.DIRECTORY - ディレクトリ</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static E_Attributes GetAttributes(string path)
         {
-            try
-            {
-                // ディレクトリフラグが存在すればディレクトリ、
-                // それ以外はファイルと見なす
-                return
-                File.GetAttributes(path).HasFlag(FileAttributes.Directory) ?
-                E_Attributes.DIRECTORY : E_Attributes.FILE;
-            }
-            // 例外発生時
-            catch
-            {
-                // 属性無し
-                return E_Attributes.NONE;
-            }
+            // ディレクトリフラグが存在すればディレクトリ、
+            // それ以外はファイルと見なす
+            return
+            File.GetAttributes(path).HasFlag(FileAttributes.Directory) ?
+            E_Attributes.DIRECTORY : E_Attributes.FILE;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -170,14 +169,7 @@ namespace Util
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static string GetAbsolutePath(string path)
         {
-            try
-            {
-                return Path.GetFullPath(path);
-            }
-            catch
-            {
-                return String.Empty;
-            }
+            return Path.GetFullPath(path);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -190,14 +182,7 @@ namespace Util
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static string GetFileExtension(string path)
         {
-            try
-            {
-                return (new FileInfo(path)).Extension;
-            }
-            catch
-            {
-                return String.Empty;
-            }
+            return (new FileInfo(path)).Extension;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -206,28 +191,16 @@ namespace Util
         /// </summary>
         /// <param name="path">[I]変更前のファイルパス</param>
         /// <param name="ext">[I]変更後の拡張子</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool ChangeFileExtension(string path, string ext)
+        public static void ChangeFileExtension(string path, string ext)
         {
-            try
-            {
-                // (ext が "." を含む場合)"."を取り除く
-                ext = ext.Replace(".", "");
+            // (ext が "." を含む場合)"."を取り除く
+            ext = ext.Replace(".", "");
 
-                // ファイル名を変更
-                string newName = path.Remove(path.LastIndexOf('.'));
-                newName += '.' + ext;
-                File.Move(path, newName);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            // ファイル名を変更
+            string newName = path.Remove(path.LastIndexOf('.'));
+            newName += '.' + ext;
+            File.Move(path, newName);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -235,32 +208,25 @@ namespace Util
         /// [static] ディレクトリに含まれるファイルの一覧を取得する
         /// </summary>
         /// <param name="path">         [I]対象ディレクトリ</param>
-        ///                                null の場合はカレントディレクトリ
+        ///                                空の場合はカレントディレクトリ
         /// <param name="recursive">    [I]サブフォルダを含めるか<br/>
         ///                                true  - 含める<br/>
         ///                                false - 含めない</param>
         /// <param name="pattern">      [I]ファイルパターン<br/>
-        ///                                null の場合はすべてのファイル</param>
-        /// <param name="ignoreItself"> [I]自身の直下のファイルを無視するか<br/>
-        ///                                true  - 無視する<br/>
-        ///                                false - 無視しない</param>
+        ///                                空の場合はすべてのファイル</param>
         /// <returns>取得したファイル一覧</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static string[]? GetFiles(string? path = null,
+        public static List<string> GetFiles(string path = "",
                                          bool recursive = false,
-                                         string? pattern = null,
-                                         bool ignoreItself = false)
+                                         string pattern = "")
         {
-            try
+            var ret = new List<string>();
+            if (String.IsNullOrEmpty(path))
             {
-                var ret = new List<string>();
-                GetFiles_Core(path ?? CurrentDir, ref ret, pattern, recursive, ignoreItself);
-                return ret.ToArray();
+                path = CurrentDir;
             }
-            catch
-            {
-                return null;
-            }
+            GetFiles_Core(path, ref ret, pattern, recursive);
+            return ret;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -268,26 +234,22 @@ namespace Util
         /// [static] ディレクトリに含まれるファイル数を取得する
         /// </summary>
         /// <param name="path">         [I]対象ディレクトリ</param>
-        ///                                null の場合はカレントディレクトリ
+        ///                                空の場合はカレントディレクトリ
         /// <param name="recursive">    [I]サブフォルダを含めるか<br/>
         ///                                true  - 含める<br/>
         ///                                false - 含めない</param>
         /// <param name="pattern">      [I]ファイルパターン<br/>
-        ///                                null の場合はすべてのファイル</param>
-        /// <param name="ignoreItself"> [I]自身の直下のファイルを無視するか<br/>
-        ///                                true  - 無視する<br/>
-        ///                                false - 無視しない</param>
+        ///                                空の場合はすべてのファイル</param>
         /// <returns>ファイル総数<br/>
         ///          失敗時は 0</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static long GetNumberOfFiles(string? path = null,
+        public static long GetNumberOfFiles(string path = "",
                                             bool recursive = false,
-                                            string? pattern = null,
-                                            bool ignoreItself = false)
+                                            string pattern = "")
         {
             // GetFiles() != null ⇒ GetFiles().Length
             // GetFiles() == null ⇒ 0
-            return GetFiles(path, recursive, pattern, ignoreItself)?.Length ?? 0;
+            return GetFiles(path, recursive, pattern)?.Count ?? 0;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -295,21 +257,13 @@ namespace Util
         /// [static] 指定されたディレクトリの下位ディレクトリを再帰的に取得する
         /// </summary>
         /// <param name="path">[I]ルートディレクトリ</param>
-        /// <returns>path のサブディレクトリ一覧<br/>
-        ///          失敗時は null</returns>
+        /// <returns>path のサブディレクトリ一覧</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static string[]? GetSubDirectories(string path)
+        public static List<string> GetSubDirectories(string path)
         {
-            try
-            {
-                var ret = new List<string>();
-                GetSubDirectories_Core(path, ref ret);
-                return ret.ToArray();
-            }
-            catch
-            {
-                return null;
-            }
+            var ret = new List<string>();
+            GetSubDirectories_Core(path, ref ret);
+            return ret;
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -322,27 +276,16 @@ namespace Util
         /// <param name="ow"> [I]同名のファイルが存在する場合に上書きするか<br/>
         ///                      true  - 上書きする<br/>
         ///                      false - 上書きしない(デフォルト)</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool CopyFile(string src, string dst, bool ow = false)
+        public static void CopyFile(string src, string dst, bool ow = false)
         {
-            try
+            // dst がディレクトリの場合
+            if (GetAttributes(dst) == E_Attributes.DIRECTORY)
             {
-                // dst がディレクトリの場合
-                if (GetAttributes(dst) == E_Attributes.DIRECTORY)
-                {
-                    dst += @"\" + (new FileInfo(src)).Name;
-                }
+                dst += @"\" + (new FileInfo(src)).Name;
+            }
 
-                File.Copy(src, dst, ow);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            File.Copy(src, dst, ow);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -351,367 +294,8 @@ namespace Util
         /// </summary>
         /// <param name="srcDir">[I]コピー元ルートディレクトリ</param>
         /// <param name="dstDir">[I]コピー先ルートディレクトリ</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool CopyDirectory(string srcDir, string dstDir)
-        {
-            try
-            {
-                CopyDirectory_Core(srcDir, dstDir);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ファイルを移動する
-        /// </summary>
-        /// <param name="src">[I]移動元ファイル名</param>
-        /// <param name="dst">[I]移動先ファイル名 または<br/>
-        ///                      移動先ディレクトリ</param>
-        /// <param name="ow"> [I]同名のファイルが存在する場合に上書きするか<br/>
-        ///                      true  - 上書きする<br/>
-        ///                      false - 上書きしない(デフォルト)</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool MoveFile(string src, string dst, bool ow = false)
-        {
-            try
-            {
-                // dst がディレクトリの場合
-                if (GetAttributes(dst) == E_Attributes.DIRECTORY)
-                {
-                    dst += @"\" + (new FileInfo(src)).Name;
-                }
-
-                File.Move(src, dst, ow);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ディレクトリを移動する
-        /// </summary>
-        /// <param name="src">[I]移動元ディレクトリ</param>
-        /// <param name="dst">[I]移動先ディレクトリ</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        // -------+-----------------------------------------------------
-        // 引数   | string src : [I]移動元ディレクトリ
-        //        | string dst : [I]移動先ディレクトリ
-        // -------+-----------------------------------------------------
-        // 戻り値 | なし
-        // -------+-----------------------------------------------------
-        // 例外   | Exception
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool MoveDirectory(string src, string dst)
-        {
-            try
-            {
-                Directory.Move(src, dst);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ファイル・ディレクトリを削除する
-        /// </summary>
-        /// <param name="path">[I]削除対象ファイル・ディレクトリ</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool Delete(string path)
-        {
-            try
-            {
-                switch (GetAttributes(path))
-                {
-                    // ファイル
-                    case E_Attributes.FILE:
-                        File.Delete(path);
-                        break;
-
-                    // ディレクトリ
-                    case E_Attributes.DIRECTORY:
-                        Directory.Delete(path);
-                        break;
-
-                    default:
-                        return false;
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ファイル・ディレクトリのサイズ(バイト単位)を取得する
-        /// </summary>
-        /// <param name="path">[I]対象ファイル・ディレクトリ</param>
-        /// <param name="ignoreItself">(path がディレクトリの場合)<br/>
-        ///                            [I]自身の直下のファイルを無視するか<br/>
-        ///                               true  - 除外する(サブディレクトリ以下のファイルのみを計上)<br/>
-        ///                               false - 除外しない(自身とサブディレクトリ以下のファイルを計上)<br/>
-        ///                                       (デフォルト)</param>
-        /// <returns>ファイル・ディレクトリのサイズ<br/>
-        ///          失敗時は C_INVALIDSIZE</returns>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static long GetSize(string path, bool ignoreItself = false)
-        {
-            try
-            {
-                switch (GetAttributes(path))
-                {
-                    case E_Attributes.FILE:
-                        return (new FileInfo(path)).Length;
-
-                    case E_Attributes.DIRECTORY:
-                        return GetDirectorySize_Core(new DirectoryInfo(path), ignoreItself);
-                }
-
-                return C_INVALIDSIZE;
-            }
-            catch
-            {
-                return C_INVALIDSIZE;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ファイル・ディレクトリのタイムスタンプを更新する
-        /// </summary>
-        /// <param name="path">[I]対象ファイル・ディレクトリ</param>
-        /// <param name="dt">[I]更新後のタイムスタンプ</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// <remarks>作成日時・更新日時・最終アクセス日時を現在日時に設定</remarks>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        public static bool UpdateTimeStamp(string path,
-                                           DateTime dt,
-                                           string? pattern = null,
-                                           bool recursive = false,
-                                           bool ignoreItself = false)
-        {
-            try
-            {
-                // パスの属性によって切り分け
-                switch (GetAttributes(path))
-                {
-                    // ファイル
-                    case E_Attributes.FILE:
-                        // タイムスタンプ更新
-                        UpdateFileTimeStamp_Core(path, dt);
-                        return true;
-
-                    // ディレクトリ
-                    case E_Attributes.DIRECTORY:
-                        // タイムスタンプ更新
-                        UpdateDirectoryTimeStamp_Core(path, dt);
-                        // 再帰設定なし ⇒ 自身のみ更新して抜ける
-                        if (!recursive)
-                        {
-                            return true;
-                        }
-                        break;
-
-                    // それ以外(対象不在) ⇒ 例外
-                    default:
-                        return false;
-                }
-
-                // サブディレクトリの一覧取得
-                var list_Dirs = new List<string>();
-                GetSubDirectories_Core(path, ref list_Dirs);
-                // サブディレクトリのタイムスタンプ更新
-                foreach (var item in list_Dirs)
-                {
-                    UpdateDirectoryTimeStamp_Core(item, dt);
-                }
-
-                // ファイルの一覧取得
-                var list_Files = new List<string>();
-                GetFiles_Core(path, ref list_Files, pattern, true, ignoreItself);
-                // ファイルのタイムスタンプ更新
-                foreach (var item in list_Files)
-                {
-                    UpdateFileTimeStamp_Core(item, dt);
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        // private メソッド (static)
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ディレクトリのサイズ(バイト単位)を取得する
-        /// </summary>
-        /// <param name="di">[I]対象のディレクトリ情報</param>
-        /// <param name="ignoreItself">[I]自身の直下のファイルを無視するか<br/>
-        ///                               true  - 除外する(サブディレクトリ以下のファイルのみを計上)<br/>
-        ///                               false - 除外しない(自身とサブディレクトリ以下のファイルを計上)<br/>
-        ///                                       (デフォルト)</param>
-        /// <returns>ファイル・ディレクトリのサイズ<br/>
-        ///          失敗時は C_INVALIDSIZE</returns>
-        /// <remarks>サブディレクトリを再帰的に走査する</remarks>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        private static long GetDirectorySize_Core(DirectoryInfo di, bool ignoreItself = false)
-        {
-            long size = 0;     //< 返却するサイズ
-
-            try
-            {
-                // (除外設定なしの場合)自身に含まれるファイルの合計サイズを加算
-                if (!ignoreItself)
-                {
-                    foreach (FileInfo fi in di.GetFiles())
-                    {
-                        size += fi.Length;
-                    }
-                }
-
-                // サブディレクトリの合計サイズを加算(再帰)
-                foreach (DirectoryInfo di_Sub in di.GetDirectories())
-                {
-                    size += GetDirectorySize_Core(di_Sub);
-                }
-            }
-            catch
-            {
-                throw new Exception("GetDirectorySize_Core");
-            }
-
-            return size;
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ディレクトリに含まれるファイルの一覧を取得する
-        /// </summary>
-        /// <param name="path">         [I]対象ディレクトリ</param>
-        /// <param name="list_Files">   [I/O]取得したファイルの一覧</param>
-        /// <param name="pattern">      [I]ファイルパターン<br/>
-        ///                                null の場合はすべてのファイル</param>
-        /// <param name="recursive">    [I]サブフォルダを含めるか<br/>
-        ///                                true  - 含める<br/>
-        ///                                false - 含めない</param>
-        /// <param name="ignoreItself"> [I]自身の直下のファイルを無視するか<br/>
-        ///                                true  - 無視する<br/>
-        ///                                false - 無視しない</param>
-        /// <exception cref="Exception"></exception>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        private static void GetFiles_Core(string path,
-                                          ref List<string> list_Files,
-                                          string? pattern = null,
-                                          bool recursive = false,
-                                          bool ignoreItself = false)
-        {
-            // 再帰設定なし ⇒ 当該ディレクトリ以下のファイルのみをリストに追加して抜ける
-            if (!recursive)
-            {
-                list_Files.AddRange(GetFiles_Core_ItselfOnly(path, pattern));
-                return;
-            }
-
-            // 除外設定なし ⇒ 当該ディレクトリ以下のファイルをリストに追加
-            if (!ignoreItself)
-            {
-                list_Files.AddRange(GetFiles_Core_ItselfOnly(path, pattern));
-            }
-
-            // サブディレクトリに含まれるファイルを追加(再帰)
-            foreach (string dir in Directory.GetDirectories(path))
-            {
-                GetFiles_Core(dir, ref list_Files, pattern, true, false);
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ディレクトリに含まれるファイルの一覧を取得する<br/>
-        ///          (当該ディレクトリのみ)
-        /// </summary>
-        /// <param name="path">[I]対象ディレクトリ</param>
-        /// <param name="pattern">[I]ファイルパターン<br/>
-        ///                          null の場合はすべてのファイル</param>
-        /// <returns>ファイル一覧</returns>
-        /// <exception cref="Exception"></exception>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        private static string[] GetFiles_Core_ItselfOnly(string path, string? pattern = null)
-        {
-            return String.IsNullOrEmpty(pattern) ?
-                Directory.GetFiles(path) :
-                Directory.GetFiles(path, pattern);
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] 指定されたディレクトリの下位ディレクトリを再帰的に取得する
-        /// </summary>
-        /// <param name="path">[I]ルートディレクトリ</param>
-        /// <param name="list_Dirs">[I/O]path のサブディレクトリ一覧</param>
-        /// <returns>処理結果<br/>
-        ///          true  - 成功<br/>
-        ///          false - 失敗</returns>
-        /// <remarks>引数として渡された list_Dirs の末尾に追記する</remarks>
-        /// <exception cref="Exception"></exception>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        private static void GetSubDirectories_Core(string path, ref List<string> list_Dirs)
-        {
-            // path に含まれるサブディレクトリをスキャン
-            foreach (string subDir in Directory.GetDirectories(path))
-            {
-                // サブディレクトリをリストに追加
-                list_Dirs.Add(subDir);
-
-                // サブディレクトリに含まれるディレクトリを再帰的に取得
-                GetSubDirectories_Core(subDir, ref list_Dirs);
-            }
-        }
-
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        /// <summary>
-        /// [static] ディレクトリ構造を再帰的にコピーする
-        /// </summary>
-        /// <param name="srcDir">[I]コピー元ルートディレクトリ</param>
-        /// <param name="dstDir">[I]コピー先ルートディレクトリ</param>
-        /// <exception cref="Exception"></exception>
-        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
-        private static void CopyDirectory_Core(string srcDir, string dstDir)
+        public static void CopyDirectory(string srcDir, string dstDir)
         {
             // コピー先ルートディレクトリが存在しない場合は作成
             if (!(Directory.Exists(dstDir)))
@@ -738,7 +322,269 @@ namespace Util
                 }
 
                 // サブディレクトリの下位構造を再帰的にコピー
-                CopyDirectory_Core(subDir_Src, subDir_Dst);
+                CopyDirectory(subDir_Src, subDir_Dst);
+            }
+
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ファイルを移動する
+        /// </summary>
+        /// <param name="src">[I]移動元ファイル名</param>
+        /// <param name="dst">[I]移動先ファイル名 または<br/>
+        ///                      移動先ディレクトリ</param>
+        /// <param name="ow"> [I]同名のファイルが存在する場合に上書きするか<br/>
+        ///                      true  - 上書きする<br/>
+        ///                      false - 上書きしない(デフォルト)</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void MoveFile(string src, string dst, bool ow = false)
+        {
+            // dst がディレクトリの場合
+            if (GetAttributes(dst) == E_Attributes.DIRECTORY)
+            {
+                dst += @"\" + (new FileInfo(src)).Name;
+            }
+
+            File.Move(src, dst, ow);
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ディレクトリを移動する
+        /// </summary>
+        /// <param name="src">[I]移動元ディレクトリ</param>
+        /// <param name="dst">[I]移動先ディレクトリ</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void MoveDirectory(string src, string dst)
+        {
+            Directory.Move(src, dst);
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ファイル・ディレクトリを削除する
+        /// </summary>
+        /// <param name="path">[I]削除対象ファイル・ディレクトリ</param>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static void Delete(string path)
+        {
+            switch (GetAttributes(path))
+            {
+                // ファイル
+                case E_Attributes.FILE:
+                    File.Delete(path);
+                    return;
+
+                // ディレクトリ
+                case E_Attributes.DIRECTORY:
+                    Directory.Delete(path);
+                    return;
+            }
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ファイル・ディレクトリのサイズ(バイト単位)を取得する
+        /// </summary>
+        /// <param name="path">[I]対象ファイル・ディレクトリ</param>
+        /// <returns>ファイル・ディレクトリのサイズ<br/>
+        ///          失敗時は C_INVALIDSIZE</returns>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static long GetSize(string path)
+        {
+            switch (GetAttributes(path))
+            {
+                case E_Attributes.FILE:
+                    return (new FileInfo(path)).Length;
+
+                case E_Attributes.DIRECTORY:
+                    return GetDirectorySize_Core(new DirectoryInfo(path));
+            }
+
+            return C_INVALIDSIZE;
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ファイル・ディレクトリのタイムスタンプを更新する
+        /// </summary>
+        /// <param name="path">[I]対象ファイル・ディレクトリ</param>
+        /// <param name="dt">[I]更新後のタイムスタンプ</param>
+        /// <param name="pattern">[I]対象とするファイルのパターン
+        ///                          空の場合はすべてのファイル</param>
+        /// <param name="recursive">[I]サブディレクトリを再帰的に走査するかどうか</param>                         
+        ///                            true  - 再帰的に走査する
+        ///                            false - 自身のみを対象とする
+        /// <returns>処理結果<br/>
+        ///          true  - 成功<br/>
+        ///          false - 失敗</returns>
+        /// <remarks>作成日時・更新日時・最終アクセス日時を現在日時に設定</remarks>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        public static bool UpdateTimeStamp(string path,
+                                           DateTime dt,
+                                           string pattern = "",
+                                           bool recursive = false)
+        {
+            // 指定されたパス自身に対する処理
+            switch (GetAttributes(path))
+            {
+                // ファイル
+                case E_Attributes.FILE:
+                    // タイムスタンプ更新
+                    UpdateFileTimeStamp_Core(path, dt);
+                    return true;
+
+                // ディレクトリ
+                case E_Attributes.DIRECTORY:
+                    // タイムスタンプ更新
+                    UpdateDirectoryTimeStamp_Core(path, dt);
+                    // 再帰設定なし ⇒ ここで終了
+                    if (!recursive)
+                    {
+                        return true;
+                    }
+                    break;
+
+                // それ以外(対象不在) ⇒ 失敗
+                default:
+                    return false;
+            }
+
+            // サブディレクトリの一覧取得
+            var list_Dirs = new List<string>();
+            GetSubDirectories_Core(path, ref list_Dirs);
+            // サブディレクトリのタイムスタンプ更新
+            foreach (var item in list_Dirs)
+            {
+                UpdateDirectoryTimeStamp_Core(item, dt);
+            }
+
+            // ファイルの一覧取得
+            var list_Files = new List<string>();
+            GetFiles_Core(path, ref list_Files, pattern, true);
+            // ファイルのタイムスタンプ更新
+            foreach (var item in list_Files)
+            {
+                UpdateFileTimeStamp_Core(item, dt);
+            }
+
+            return true;
+
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// private メソッド (static)
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ディレクトリのサイズ(バイト単位)を取得する
+        /// </summary>
+        /// <param name="di">[I]対象のディレクトリ情報</param>
+        /// <returns>ファイル・ディレクトリのサイズ<br/>
+        ///          失敗時は C_INVALIDSIZE</returns>
+        /// <remarks>サブディレクトリを再帰的に走査する</remarks>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        private static long GetDirectorySize_Core(DirectoryInfo di)
+        {
+            long size = 0;     //< 返却するサイズ
+
+            // サブディレクトリの合計サイズを加算(再帰)
+            foreach (DirectoryInfo di_Sub in di.GetDirectories())
+            {
+                size += GetDirectorySize_Core(di_Sub);
+            }
+
+            return size;
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ディレクトリに含まれるファイルの一覧を取得する
+        /// </summary>
+        /// <param name="path">         [I]対象ディレクトリ</param>
+        /// <param name="list_Files">   [I/O]取得したファイルの一覧</param>
+        /// <param name="pattern">      [I]ファイルパターン<br/>
+        ///                                空の場合はすべてのファイル</param>
+        /// <param name="recursive">    [I]サブフォルダを含めるか<br/>
+        ///                                true  - 含める<br/>
+        ///                                false - 含めない</param>
+        /// <exception cref="Exception"></exception>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        private static void GetFiles_Core(string path,
+                                          ref List<string> list_Files,
+                                          string pattern = "",
+                                          bool recursive = false)
+        {
+            // 再帰設定なし ⇒ 当該ディレクトリ以下のファイルのみをリストに追加して抜ける
+            if (!recursive)
+            {
+                list_Files.AddRange(GetFiles_Core_ItselfOnly(path, pattern));
+                return;
+            }
+
+            // サブディレクトリを取得
+            var dirs = Directory.GetDirectories(path);
+
+            // サブディレクトリが存在する場合
+            if (dirs?.Length > 0)
+            {
+                // サブディレクトリに含まれるファイルを追加(再帰)
+                foreach (string dir in dirs)
+                {
+                    GetFiles_Core(dir, ref list_Files, pattern, true);
+                }
+            }
+            // サブディレクトリが存在しない場合
+            else
+            {
+                // 当該ディレクトリ以下のファイルのみをリストに追加
+                list_Files.AddRange(GetFiles_Core_ItselfOnly(path, pattern));
+            }
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] ディレクトリに含まれるファイルの一覧を取得する<br/>
+        ///          (当該ディレクトリのみ)
+        /// </summary>
+        /// <param name="path">[I]対象ディレクトリ</param>
+        /// <param name="pattern">[I]ファイルパターン<br/>
+        ///                          空の場合はすべてのファイル</param>
+        /// <returns>ファイル一覧</returns>
+        /// <exception cref="Exception"></exception>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        private static List<string> GetFiles_Core_ItselfOnly(string path, string pattern = "")
+        {
+            var ret = String.IsNullOrEmpty(pattern) ?
+                Directory.GetFiles(path) :
+                Directory.GetFiles(path, pattern);
+            return new List<string>(ret);
+        }
+
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        /// <summary>
+        /// [static] 指定されたディレクトリの下位ディレクトリを再帰的に取得する
+        /// </summary>
+        /// <param name="path">[I]ルートディレクトリ</param>
+        /// <param name="list_Dirs">[I/O]path のサブディレクトリ一覧</param>
+        /// <returns>処理結果<br/>
+        ///          true  - 成功<br/>
+        ///          false - 失敗</returns>
+        /// <remarks>引数として渡された list_Dirs の末尾に追記する</remarks>
+        /// <exception cref="Exception"></exception>
+        /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
+        private static void GetSubDirectories_Core(string path, ref List<string> list_Dirs)
+        {
+            // path に含まれるサブディレクトリをスキャン
+            foreach (string subDir in Directory.GetDirectories(path))
+            {
+                // サブディレクトリをリストに追加
+                list_Dirs.Add(subDir);
+
+                // サブディレクトリに含まれるディレクトリを再帰的に取得
+                GetSubDirectories_Core(subDir, ref list_Dirs);
             }
         }
 

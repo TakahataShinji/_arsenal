@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Util
 {
@@ -26,12 +27,12 @@ namespace Util
         /// private 定数
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         // メッセージボックス処理結果変換テーブル
-        private static Dictionary<MessageBoxResult, E_MsgBoxResult> D_MsgBoxResult = new Dictionary<MessageBoxResult, E_MsgBoxResult>()
+        private static Dictionary<DialogResult, E_MsgBoxResult> D_MsgBoxResult = new Dictionary<DialogResult, E_MsgBoxResult>()
         {
-            { MessageBoxResult.OK,      E_MsgBoxResult.E_MSGBOX_OK      },      //< 「OK」
-            { MessageBoxResult.Cancel,  E_MsgBoxResult.E_MSGBOX_CANCEL  },      //< 「キャンセル」
-            { MessageBoxResult.Yes,     E_MsgBoxResult.E_MSGBOX_YES     },      //< 「はい」
-            { MessageBoxResult.No,      E_MsgBoxResult.E_MSGBOX_NO      },      //< 「いいえ」
+            { DialogResult.OK,      E_MsgBoxResult.E_MSGBOX_OK      },      //< 「OK」
+            { DialogResult.Cancel,  E_MsgBoxResult.E_MSGBOX_CANCEL  },      //< 「キャンセル」
+            { DialogResult.Yes,     E_MsgBoxResult.E_MSGBOX_YES     },      //< 「はい」
+            { DialogResult.No,      E_MsgBoxResult.E_MSGBOX_NO      },      //< 「いいえ」
         };
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -47,7 +48,7 @@ namespace Util
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static void ShowInfoMsgBox(string msg, string title = "情報")
         {
-            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -59,7 +60,7 @@ namespace Util
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static void ShowWarnMsgBox(string msg, string title = "警告")
         {
-            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -71,7 +72,7 @@ namespace Util
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
         public static void ShowErrorMsgBox(string msg, string title = "エラー")
         {
-            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = -
@@ -87,7 +88,7 @@ namespace Util
         public static E_MsgBoxResult ShowYesNoMsgBox(string msg, string title = "確認")
         {
             // メッセージボックス表示、押されたボタンを取得
-            MessageBoxResult ret = MessageBox.Show(msg, title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+            DialogResult ret = MessageBox.Show(msg, title, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
             // E_MsgBoxResult に変換して返す
             return D_MsgBoxResult[ret];
